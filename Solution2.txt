@@ -1,0 +1,62 @@
+----1.How many orders were shipped by Speedy Express in total?---
+---speedy express shipper ID---
+SELECT * FROM Shippers
+WHERE ShipperName = "Speedy Express";
+
+Result:
+ShipperID	ShipperName		Phone
+1			Speedy Express	(503) 555-9831
+
+---total number of orders--
+SELECT SUM(Quantity), ShipperID FROM Orders 
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+WHERE ShipperID = 1
+GROUP BY ShipperID;
+
+Result:
+	Number of Records: 1
+	SUM(Quantity)	ShipperID
+	3575			1
+-----3575 orders were shipped by speedy express-----
+	
+------2.What is the last name of the employee with the most orders?----
+----To get employee with highest orders
+SELECT SUM(Quantity), EmployeeID FROM Orders 
+INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+GROUP BY EmployeeID
+ORDER BY SUM(Quantity)DESC
+LIMIT 1;
+
+Result:
+Number of Records: 1
+SUM(Quantity)	EmployeeID
+3232			4
+-----to get last name of employee
+SELECT EmployeeID, LastName FROM Employees
+WHERE EmployeeID = 4;
+
+Result:
+Number of Records: 1
+EmployeeID	LastName
+4			Peacock
+
+------3.What product was ordered the most by customers in Germany?----
+SELECT ProductName, SUM(Quantity) FROM Orders
+LEFT JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+LEFT JOIN Products ON Products.ProductID = OrderDetails.ProductID
+LEFT JOIN Customers ON Customers.CustomerID = Orders.CustomerID
+WHERE Country= "Germany"
+GROUP BY ProductName
+ORDER BY SUM(Quantity) DESC
+LIMIT 5;
+
+Result:
+Number of Records: 5
+ProductName					SUM(Quantity)
+Boston Crab Meat			160
+Gorgonzola Telino			125
+Tunnbröd					105
+Steeleye Stout				100
+Teatime Chocolate Biscuits	95
+-----Boston Crab Meat was ordered the most by customers in Germany-----
+	
